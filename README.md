@@ -10,4 +10,4 @@ I'm using a GCP Bucket in order to store the terraform state. The bucket name is
 - terraform apply
 
 ## Packer
-`packer build -var machine_type=<machine> -var region=<region> packer/packer.json`
+`packer build -var machine_type=<machine> -var region=<region> packer.json`
