@@ -1,0 +1,60 @@
+{
+    "variables": {
+      "machine_type": "var",
+      "region": "var",
+      "account_file": "{{env `GCP_SERVICE_ACCOUNT`}}"
+    },
+    "builders": [
+      {
+        "type": "googlecompute",
+        "project_id": "gcp-test-263020",
+        "account_file": "{{user `account_file`}}",
+        "machine_type": "",
+        "source_image": "debian-10-buster-v20191210",
+        "ssh_username": "packer",
+        "region": "",
+        "zone": "us-central1-a",
+        "image_description": "Demo Ubuntu Machine Image",
+        "image_name": "gcp-falcon-packer",
+        "disk_size": 16,
+        "disk_type": "pd-ssd"
+      }
+    ],
+    "provisioners": [{
+        "type": "shell",
+        "inline": [
+            "sudo apt-get update",
+            "sudo apt-get -y install wget",
+            "sudo apt-get -y install default-jdk",
+            "wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo apt-key add -",
+            "sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'",
+            "sudo apt -y install maven",
+            "sudo apt update",
+            "sudo apt -y install git",
+            "export CLOUD_SDK_REPO='cloud-sdk-$(lsb_release -c -s)'",
+            "echo 'deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main' | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list",
+            "curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -",
+            "sudo apt-get update && sudo apt-get -y install google-cloud-sdk",
+            "sudo apt-get update && sudo apt-get install -y apt-transport-https",
+            "curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -",
+            "echo 'deb https://apt.kubernetes.io/ kubernetes-xenial main' | sudo tee -a /etc/apt/sources.list.d/kubernetes.list",
+            "sudo apt-get update",
+            "sudo apt-get install -y kubectl",
+            "sudo apt -y install jenkins",
+            "sudo apt -y install nodejs",
+            "curl -L https://npmjs.org/install.sh | sudo sh",
+            "sudo apt update",
+            "sudo apt -y install apt-transport-https ca-certificates curl gnupg2 software-properties-common",
+            "curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -",
+            "sudo add-apt-repository 'deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable'",
+            "sudo apt update",
+            "sudo apt -y install docker-ce",
+            "sudo usermod -aG docker jenkins",
+            "wget  'https://services.gradle.org/distributions/gradle-6.0.1-bin.zip'",
+            "sudo mkdir /opt/gradle",
+            "sudo apt-get -y install unzip",
+            "sudo unzip -d /opt/gradle gradle-6.0.1-bin.zip",
+            "export PATH=$PATH:/opt/gradle/gradle-6.0.1/bin"
+        ]
+    }]
+  }
